@@ -30,7 +30,21 @@ const lbContent=lightbox.querySelector(".lightbox-content"),lbCaption=lightbox.q
 function closeLightbox(){const v=lbContent.querySelector("video");if(v)v.pause();lightbox.classList.remove("active");lightbox.setAttribute("aria-hidden","true");lbContent.replaceChildren();lbCaption.textContent="";document.body.classList.remove("lightbox-open");if(lightboxUrl){URL.revokeObjectURL(lightboxUrl);lightboxUrl=null}}
 async function openLightbox(p){closeLightbox();let src=p.src||"";if(p.mediaId && !src){const blob=await getMedia(p.mediaId);if(blob){lightboxUrl=URL.createObjectURL(blob);src=lightboxUrl}}if(!src)return;lbCaption.textContent=p.title||"";let el;if(p.type==="video"){el=document.createElement("video");el.controls=true;el.autoplay=true;el.playsInline=true;el.preload="metadata"}else{el=document.createElement("img");el.alt=p.title||"Portfolio project"}el.src=src;lbContent.appendChild(el);lightbox.classList.add("active");lightbox.setAttribute("aria-hidden","false");document.body.classList.add("lightbox-open");if(p.type==="video")el.play().catch(()=>{})}
 lightbox.querySelector(".lightbox-close").addEventListener("click",closeLightbox);lightbox.addEventListener("click",e=>{if(e.target===lightbox)closeLightbox()});document.addEventListener("keydown",e=>{if(e.key==="Escape"&&lightbox.classList.contains("active"))closeLightbox()});
-async function resolveSrc(p,thumb=false){const id=thumb?p.thumbId:p.mediaId;if(id && !p.src){const blob=await getMedia(id);if(blob)return URL.createObjectURL(blob)}return p.src||""}
+function publicMediaPath(value){
+  if(!value)return "";
+  const raw=String(value).trim();
+  if(/^(https?:|data:|blob:)/i.test(raw))return raw;
+  const normalized=raw.replace(/\\\\/g,"/");
+  const lower=normalized.toLowerCase();
+  for(const folder of ["images/","videos/"]){
+    const index=lower.lastIndexOf("/"+folder);
+    if(index>=0)return "./"+normalized.slice(index+1).split("/").map(encodeURIComponent).join("/");
+    if(lower.startsWith(folder))return "./"+normalized.split("/").map(encodeURIComponent).join("/");
+    if(lower.startsWith("./"+folder))return "./"+normalized.slice(2).split("/").map(encodeURIComponent).join("/");
+  }
+  return normalized;
+}
+async function resolveSrc(p,thumb=false){const id=thumb?p.thumbId:p.mediaId;if(id && !p.src){const blob=await getMedia(id);if(blob)return URL.createObjectURL(blob)}return publicMediaPath(p.src||"")}
 async function renderProjects(filter="all"){currentFilter=filter;const grid=document.getElementById("projectGrid");if(!grid)return;const items=(publishedProjects || getProjects()).filter(p=>filter==="all"||p.category===filter);grid.innerHTML="";if(!items.length){grid.innerHTML='<p class="muted">No projects in this category yet.</p>';return}
 for(const p of items){const card=document.createElement("article");card.className="project-card";const btn=document.createElement("button");btn.type="button";btn.className="project-preview";btn.setAttribute("aria-label","Preview "+(p.title||"project"));const useThumb=!!p.thumbId;const src=await resolveSrc(p,useThumb);if(src){if(p.type==="video"&&!useThumb){const video=document.createElement("video");video.className="project-media";video.src=src;video.muted=true;video.playsInline=true;video.preload="metadata";btn.appendChild(video);const play=document.createElement("span");play.className="media-play-icon";play.textContent="▶";btn.appendChild(play)}else{const img=document.createElement("img");img.className="project-media";img.src=src;img.alt=p.title||"Portfolio project";img.loading="lazy";btn.appendChild(img);if(p.type==="video"){const play=document.createElement("span");play.className="media-play-icon";play.textContent="▶";btn.appendChild(play)}}const hint=document.createElement("span");hint.className="preview-hint";hint.textContent=p.type==="video"?"PLAY VIDEO ↗":"VIEW IMAGE ↗";btn.appendChild(hint)}else{const placeholder=document.createElement("div");placeholder.className="placeholder-art";placeholder.textContent=p.mark||"N.O.";btn.appendChild(placeholder)}
 btn.addEventListener("click",()=>openLightbox(p));const info=document.createElement("div");info.className="project-info";const details=document.createElement("div");const title=document.createElement("h3");title.textContent=p.title||"Untitled project";const desc=document.createElement("p");desc.textContent=[p.description||"",...(p.software||[])].filter(Boolean).join(" · ");details.append(title,desc);const arrow=document.createElement("span");arrow.textContent="↗";info.append(details,arrow);card.append(btn,info);grid.append(card)}}
