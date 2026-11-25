@@ -1,0 +1,29 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio Admin — NARONG OL</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css"><link rel="stylesheet" href="admin.css"></head><body>
+<header class="nav"><a class="brand" href="index.html">N<span>O.</span></a><nav class="open"><a href="index.html">View Website ↗</a><a href="#manager">Project Manager</a></nav></header>
+<main class="admin-wrap" id="manager"><p class="section-kicker">PORTFOLIO CONTROL PANEL</p><h1>PROJECT <span>MANAGER.</span></h1>
+<p class="admin-intro">Add your work, choose software used, preview it, and manage your portfolio projects.</p>
+<div class="admin-warning"><strong>Local admin:</strong> Projects and uploaded media are saved in this browser only. This starter version does not sync to other devices or visitors. For a shared live admin system, connect a secure backend/database.</div>
+<section class="admin-panel"><h2 id="formTitle">Add a project</h2><form id="projectForm">
+<input type="hidden" id="projectId">
+<label>Project title<input id="title" required placeholder="e.g. Ganzberg Billboard Design"></label>
+<div class="form-row"><label>Category<select id="category"><option value="design">Graphic Design</option><option value="video">Video Editing</option><option value="content">Social Media Design</option><option value="advertising">Advertising</option><option value="photo">Photography</option><option value="other">Other Creative Work</option></select></label>
+<label>Project type<select id="type"><option value="image">Image / Design</option><option value="video">Video</option></select></label></div>
+<label>Project description<textarea id="description" rows="3" placeholder="Describe this project..."></textarea></label>
+<p class="hint">Software used (select one or more)</p><div class="software-options" id="softwareOptions">
+<label><input type="checkbox" value="Photoshop"> Photoshop</label><label><input type="checkbox" value="Illustrator"> Illustrator</label>
+<label><input type="checkbox" value="Premiere Pro"> Premiere Pro</label><label><input type="checkbox" value="After Effects"> After Effects</label>
+<label><input type="checkbox" value="Lightroom"> Lightroom</label><label><input type="checkbox" value="InDesign"> InDesign</label>
+<label><input type="checkbox" value="Audition"> Audition</label><label><input type="checkbox" value="Adobe XD"> Adobe XD</label>
+<label><input type="checkbox" value="CapCut"> CapCut</label><label><input type="checkbox" value="All Adobe"> All Adobe</label></div>
+<label>Media file path or video URL (optional)<input id="src" placeholder="videos/my-edit.mp4 or https://..."></label>
+<p class="hint">You can use a relative path inside the project folder, or upload a file below. MP4, WebM and Ogg video are recommended.</p>
+<label>Upload project image or video<input id="mediaFile" type="file" accept="image/*,video/mp4,video/webm,video/ogg"></label>
+<label>Thumbnail image (optional)<input id="thumbnailFile" type="file" accept="image/*"></label>
+<div class="admin-preview" id="livePreview"><div class="preview-empty">Your project preview will appear here.</div></div>
+<div class="form-actions"><button class="btn btn-red" type="submit" id="saveBtn">Save project <span>↗</span></button><button class="plain-btn" type="button" id="previewBtn">Preview project</button><button class="plain-btn" type="button" id="resetBtn">Clear form</button></div>
+</form></section>
+<section class="admin-panel"><div class="list-heading"><h2>Your projects</h2><button class="plain-btn" id="exportBtn" type="button">Export project data ↓</button></div><div id="adminList" class="admin-list"></div></section>
+</main><footer><a class="brand" href="index.html">N<span>O.</span></a><p>© NARONG OL — ADMIN PANEL</p><a href="index.html">VIEW WEBSITE ↗</a></footer><script src="admin.js"></script></body></html>
